@@ -5,13 +5,15 @@
 
 void firstFit(int blockSize[], int blocks, int processSize[], int processes) {
     int allocation[MAX_PROCESSES];
+    int blockOccupied[MAX_BLOCKS] = {0};
+
     for (int i = 0; i < processes; i++) allocation[i] = -1;
 
     for (int i = 0; i < processes; i++) {
         for (int j = 0; j < blocks; j++) {
-            if (blockSize[j] >= processSize[i]) {
+            if (!blockOccupied[j] && blockSize[j] >= processSize[i]) {
                 allocation[i] = j;
-                blockSize[j] -= processSize[i];
+                blockOccupied[j] = 1;
                 break;
             }
         }
@@ -28,19 +30,21 @@ void firstFit(int blockSize[], int blocks, int processSize[], int processes) {
 
 void bestFit(int blockSize[], int blocks, int processSize[], int processes) {
     int allocation[MAX_PROCESSES];
+    int blockOccupied[MAX_BLOCKS] = {0};
+
     for (int i = 0; i < processes; i++) allocation[i] = -1;
 
     for (int i = 0; i < processes; i++) {
         int bestIdx = -1;
         for (int j = 0; j < blocks; j++) {
-            if (blockSize[j] >= processSize[i]) {
+            if (!blockOccupied[j] && blockSize[j] >= processSize[i]) {
                 if (bestIdx == -1 || blockSize[j] < blockSize[bestIdx])
                     bestIdx = j;
             }
         }
         if (bestIdx != -1) {
             allocation[i] = bestIdx;
-            blockSize[bestIdx] -= processSize[i];
+            blockOccupied[bestIdx] = 1;
         }
     }
 
@@ -55,19 +59,21 @@ void bestFit(int blockSize[], int blocks, int processSize[], int processes) {
 
 void worstFit(int blockSize[], int blocks, int processSize[], int processes) {
     int allocation[MAX_PROCESSES];
+    int blockOccupied[MAX_BLOCKS] = {0};
+
     for (int i = 0; i < processes; i++) allocation[i] = -1;
 
     for (int i = 0; i < processes; i++) {
         int worstIdx = -1;
         for (int j = 0; j < blocks; j++) {
-            if (blockSize[j] >= processSize[i]) {
+            if (!blockOccupied[j] && blockSize[j] >= processSize[i]) {
                 if (worstIdx == -1 || blockSize[j] > blockSize[worstIdx])
                     worstIdx = j;
             }
         }
         if (worstIdx != -1) {
             allocation[i] = worstIdx;
-            blockSize[worstIdx] -= processSize[i];
+            blockOccupied[worstIdx] = 1;
         }
     }
 
